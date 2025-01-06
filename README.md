@@ -3,7 +3,7 @@ Unobtrusive client validation for asp.net core mvc
 (can be used instead of jquery.validate + jquery.validate.unobtrusive)
 
 ## Installation
-Add the scripts to your page:
+Add the [scripts](https://github.com/omuleanu/ovld-unobtrusive/tree/main/dist) to your page:
 ```
 <script src="~/lib/ovld/ovld-1.0.0.js"></script>
 <script src="~/lib/ovld/ovld.unobtrusive-1.0.0.js"></script>
