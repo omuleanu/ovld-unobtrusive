@@ -100,6 +100,15 @@ ovld.bind({
         }
 });
 ```
+## Ignore certain editors
+Example, ignore editors whose name starts with 'abc' (add this script after you've referenced ovld.js)
+```
+ovld.ignore = function(input){
+    if(input.attr('name').startsWith('abc')){
+        return true;
+    }
+}
+```
 ---
 Live example here: https://demo.aspnetawesome.com/Unobtrusive 
 (also reason this was created)
