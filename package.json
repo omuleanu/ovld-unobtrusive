@@ -1,0 +1,23 @@
+{
+  "name": "ovld",
+  "version": "1.0.0",
+  "description": "ovld unobtrusive client validation for asp.net core mvc",
+  "keywords": [
+    "validation",
+    "unobtrusive",
+    "client",
+    "asp.net"
+  ],
+  "license": "MIT",
+  "author": "Valentin Plamadeala",
+  "type": "module",
+  "main": "ovld.js",
+  "scripts": {
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "rollup-plugin-terser": "^7.0.2",
+    "vite": "^6.0.7"
+  }
+}

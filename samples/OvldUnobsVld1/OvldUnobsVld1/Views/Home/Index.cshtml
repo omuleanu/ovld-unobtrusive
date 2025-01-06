@@ -1,0 +1,59 @@
+﻿@model SampleInput
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div id="f1">
+    @using (Html.BeginForm())
+    {
+        @Html.EditorFor(o => o.Name)
+        @Html.EditorFor(o => o.Number)
+        @Html.EditorFor(o => o.Text)
+
+        <div class="esubmit">
+            <input type="submit" value="submit" />
+        </div>
+    }
+</div>
+<br />
+<button type="button" id="vld1" onclick="validateForm()">api validate</button>
+
+<div id="log"></div>
+@section scripts {
+    <script>
+        function validateForm(){
+            let res = ovld.unobtrusive.validate({ cont: $('#f1') });
+            console.log(res);
+            var htmlRes = '';
+
+            let count = 0;
+
+            Object.entries(res).forEach(([name, { input, rules }]) => {
+                let msg = '';
+
+                if(rules.length){
+                    msg = rules[0].msg;
+                    count ++;
+                }
+
+                htmlRes += `<div>${name} - ${msg}</div>`;
+            });
+
+            htmlRes += `<div> error count: ${count}</div>`;
+
+            $('#log').html(htmlRes);
+        }
+
+        // example, ignore where name starts with '__' (__RequestVerificationToken)
+        // though it wouldn't trigger any validation anyway
+        ovld.ignore = function(input){
+            if(input.attr('name').startsWith('__')){
+                return true;
+            }
+        }
+    </script>
+}

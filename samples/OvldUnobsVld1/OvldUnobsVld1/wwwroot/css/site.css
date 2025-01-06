@@ -1,0 +1,71 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+main {
+    min-height: calc(100vh - 200px);
+}
+
+
+.field-validation-error {
+    color: red;
+}
+
+
+
+.efield {
+    padding: 5px;
+    padding-right: 15px;
+}
+
+.elabel label {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.eform {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.earea {
+    flex: 1;
+    padding: 0 .5em;
+}
+
+.evldmsg {
+    height: 1.45em;
+}
+
+.eform .efield {
+    padding: 0;
+    padding-right: 0;
+}
+
+.eform .einput {
+    display: flex;
+    flex-direction: column;
+}
+
+.validating {
+    background: radial-gradient(106.76% 98.76% at 1% 1%, rgb(165 218 220 / 20%) 0, rgba(65, 34, 170, 0) 100%);
+}

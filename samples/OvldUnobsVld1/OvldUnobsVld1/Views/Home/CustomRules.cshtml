@@ -1,0 +1,120 @@
+﻿@model CustomRulesInput
+@{
+    ViewData["Title"] = "Custom Rules";
+}
+
+<div class="text-center">
+    <h1 class="display-5">Custom Rules</h1>
+</div>
+
+<div id="f1">
+    @using (Html.BeginForm())
+    {
+        <div>`asdf` not allowed for Name</div>
+        @Html.EditorFor(o => o.Name)
+        <div>Name1 must equal Name, the validation message will toggle by modifying either Name or Name1</div>
+        @Html.EditorFor(o => o.Name1)
+        @Html.EditorFor(o => o.Number)
+        @Html.EditorFor(o => o.Number1)
+        @Html.EditorFor(o => o.NumberRes)
+
+        <div class="esubmit">
+            <input type="submit" value="submit" />
+        </div>
+    }
+</div>
+<br />
+<button type="button" id="bind1" onclick="toggleBindVld()">bind/unbind validation</button>
+<button type="button" id="vld1" onclick="validateForm()">api validate</button>
+
+<div id="log"></div>
+@section scripts {
+    <script>
+        ovld.unobtrusive.setDefaults({ autorun: false });
+
+        let rules = {
+            Name: [{chk: noAsdf, msg:'Name can\'t contain asdf'}],
+            Name1:[{chk: sameAsName, msg: 'Name1 doesn\'t match Name'}],
+            NumberRes: [{chk: sumOfNumbers, msg: 'Must be Number + Number1'}]
+        };
+
+        let boundApi;
+
+        bind();
+
+        function bind(){
+            boundApi = ovld.unobtrusive.bind({
+                    selector: '#f1 form',
+                    rules,
+
+                    // when checking `Name`, `Name1` rules will also be checked
+                    related: {
+                        "Name": ["Name1"],
+                        "Number": ["NumberRes"],
+                        "Number1": ["NumberRes"],
+                    }
+                });
+
+            $('body').addClass('validating');
+        }
+
+        function unbind(){
+            boundApi.destroy();
+            boundApi = null;
+            $('body').removeClass('validating');
+        }
+
+        function toggleBindVld(){
+            if(boundApi){
+                unbind();
+            }
+            else{
+                bind();
+            }
+        }
+
+        function validateForm(){
+            let res = ovld.unobtrusive.validate({ cont: $('#f1'), rules });
+            console.log(res);
+            var htmlRes = '';
+
+            let count = 0;
+
+            Object.entries(res).forEach(([name, { input, rules }]) => {
+                let msg = '';
+
+                if(rules.length){
+                    msg = rules[0].msg;
+                    count ++;
+                }
+
+                htmlRes += `<div>${name} - ${msg}</div>`;
+            });
+
+            htmlRes += `<div> error count: ${count}</div>`;
+
+            $('#log').html(htmlRes);
+        }
+
+        function noAsdf({v}) {
+            return v.indexOf('asdf') !== -1;
+        }
+
+        function sameAsName({v, input }) {
+            let nameVal = input.closest('form').find('[name=Name]').val();
+            return v != nameVal;
+        }
+
+        function sumOfNumbers({v, input}){
+            const form = input.closest('form');
+            const numberVal = parseInt(form.find('[name=Number]').val(), 10);
+            const number1Val = parseInt(form.find('[name=Number1]').val(), 10);
+
+            if (parseInt(v, 10) !== numberVal + number1Val){
+                return {
+                    msg: `${numberVal} + ${number1Val} != ${v}`
+                };
+            }
+        }
+    </script>
+}

@@ -1,0 +1,13 @@
+﻿<div class="efield">
+    <div class="econt">
+        <div class="elabel">
+            @Html.Label("", null, new { @for = ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty) + ViewData["__idpostfix"] })
+        </div>
+        <div class="einput">
+            @RenderBody()
+            <div class="evldmsg">
+            @Html.ValidationMessage("")
+            </div>
+        </div>        
+    </div>
+</div>
