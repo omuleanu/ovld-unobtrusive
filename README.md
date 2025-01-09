@@ -17,7 +17,7 @@ $(document).ajaxComplete(function () {
 ```
 ## Turn off automatic bind on page load
 ```
-ovld.unobtrusive.setDefaults({ autorun: false });`
+ovld.unobtrusive.setDefaults({ autorun: false });
 ```
 ## Add additional client rules 
 Besides the validation rules parsed from the unobtrusive html attributes, we can add additional validation rules:
@@ -79,6 +79,8 @@ function sumOfNumbers({ v, input}){
     }
 }
 ```
+![CustomRules](https://github.com/user-attachments/assets/08ece984-57c8-463f-b1fd-3ff85f9c1fd2)
+
 see [custom rules page](https://github.com/omuleanu/ovld-unobtrusive/blob/main/samples/OvldUnobsVld1/OvldUnobsVld1/Views/Home/CustomRules.cshtml) for example
 ## Using ovld directly without unobtrusive attributes
 ```
