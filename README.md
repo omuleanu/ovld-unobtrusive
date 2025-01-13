@@ -95,8 +95,7 @@ ovld.bind({
 
   // container relative to the input where to put or clear the validation message
   msgCont: function(o) {
-            const nodes = o.input.closest('.awe-row').querySelector('[vld-for=' + o.name + ']');
-            if(nodes.length) return nodes[0];
+            return o.input.closest('.awe-row').querySelector('[vld-for=' + o.name + ']');            
         }
 });
 ```
