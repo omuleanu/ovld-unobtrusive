@@ -5,15 +5,13 @@ Unobtrusive client validation for asp.net core mvc
 ## Installation
 Add the [scripts](https://github.com/omuleanu/ovld-unobtrusive/tree/main/dist) to your page:
 ```
-<script src="~/lib/ovld/ovld-1.0.0.js"></script>
-<script src="~/lib/ovld/ovld.unobtrusive-1.0.0.js"></script>
+<script src="~/lib/ovld/ovld.js"></script>
+<script src="~/lib/ovld/ovld.unobtrusive.js"></script>
 ```
 ## Manually call unobtrusive validation
-On page load all `form` tags will be bound to automatically, but you can also call the bind manually, for example on ajax complete:
+On page load all `form` tags will be bound to automatically, but you can also call the bind manually, for example:
 ```
-$(document).ajaxComplete(function () {
-    window.ovld.unobtrusive.bind();
-});
+ovld.unobtrusive.bind();
 ```
 ## Turn off automatic bind on page load
 ```
@@ -48,33 +46,32 @@ We can make certain editors related, so that when we change the value of one the
 ```
 const boundApi = ovld.unobtrusive.bind({
         selector: '#f1 form',
-        rules: {            
-            Name1:[{chk: sameAsName, msg: 'Name1 doesn\'t match Name'}],
-            NumberRes: [{chk: sumOfNumbers}]
-        },
-        // when checking `Name`, `Name1` rules will also be checked
+        rules,
+
+        // when checking `Name`, rules of `Name1` will also be checked
+        // when checking NumA, rules of NumC will also be checked
         related: {
             "Name": ["Name1"],
-            "Number": ["NumberRes"],
-            "Number1": ["NumberRes"],
+            "NumA": ["NumC"],
+            "NumB": ["NumC"],
         }
-   });
+    });
 
 // value must equal the editor with name=Name
-function sameAsName({ v, input }) {
-    let nameVal = input.closest('form').find('[name=Name]').val();
+function sameAsName({v, input }) {
+    let nameVal = find(input.closest('form'), '[name=Name]')[0].value;
     return v != nameVal;
 }
 
-// int value must be equal to editor with name=Number + name=Number1
-function sumOfNumbers({ v, input}){
+// value must be equal to editor with name=NumA + name=NumB
+function sumOfNumbers({v, input}){
     const form = input.closest('form');
-    const numberVal = parseInt(form.find('[name=Number]').val(), 10);
-    const number1Val = parseInt(form.find('[name=Number1]').val(), 10);
+    const numA = parseInt(find(form, '[name=NumA]')[0].value, 10);
+    const numB = parseInt(find(form, '[name=NumB]')[0].value, 10);
 
-    if (parseInt(v, 10) !== numberVal + number1Val){
+    if (parseInt(v, 10) !== numA + numB){
         return {
-            msg: `${numberVal} + ${number1Val} != ${v}`
+            msg: `${numA} + ${numB} != ${v}`
         };
     }
 }
@@ -98,7 +95,8 @@ ovld.bind({
 
   // container relative to the input where to put or clear the validation message
   msgCont: function(o) {
-            return o.input.closest('.awe-row').find('[vld-for=' + o.name + ']');
+            const nodes = o.input.closest('.awe-row').querySelector('[vld-for=' + o.name + ']');
+            if(nodes.length) return nodes[0];
         }
 });
 ```
@@ -106,7 +104,7 @@ ovld.bind({
 Example, ignore editors whose name starts with 'abc' (add this script after you've referenced ovld.js)
 ```
 ovld.ignore = function(input){
-    if(input.attr('name').startsWith('abc')){
+    if(input.getAttribute('name').startsWith('abc')){
         return true;
     }
 }
