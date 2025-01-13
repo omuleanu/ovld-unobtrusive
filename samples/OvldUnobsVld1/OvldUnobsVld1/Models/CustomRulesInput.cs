@@ -11,12 +11,12 @@ namespace OvldUnobtrusiveValidationSample.Models
         public string Name1 { get; set; }
 
         [Required]
-        public int? Number { get; set; }
+        public int? NumA { get; set; }
 
         [Required]
-        public int? Number1 { get; set; }
+        public int? NumB { get; set; }
 
         [Required]
-        public int? NumberRes { get; set; }
+        public int? NumC { get; set; }
     }
 }

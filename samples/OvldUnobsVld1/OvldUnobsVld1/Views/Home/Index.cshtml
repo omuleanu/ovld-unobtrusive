@@ -26,7 +26,7 @@
 @section scripts {
     <script>
         function validateForm(){
-            let res = ovld.unobtrusive.validate({ cont: $('#f1') });
+            let res = ovld.unobtrusive.validate({ cont: document.querySelector('#f1') });
             console.log(res);
             var htmlRes = '';
 
@@ -44,14 +44,14 @@
             });
 
             htmlRes += `<div> error count: ${count}</div>`;
-
-            $('#log').html(htmlRes);
+                        
+            document.querySelector('#log').innerHTML = htmlRes;
         }
 
         // example, ignore where name starts with '__' (__RequestVerificationToken)
         // though it wouldn't trigger any validation anyway
         ovld.ignore = function(input){
-            if(input.attr('name').startsWith('__')){
+            if(input.getAttribute('name').startsWith('__')){
                 return true;
             }
         }

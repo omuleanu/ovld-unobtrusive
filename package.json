@@ -1,11 +1,11 @@
 {
   "name": "ovld",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ovld unobtrusive client validation for asp.net core mvc",
   "keywords": [
     "validation",
     "unobtrusive",
-    "client",
+    "client",    
     "asp.net"
   ],
   "license": "MIT",

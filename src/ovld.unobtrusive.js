@@ -1,14 +1,29 @@
-(function ($, vld) {
+(function (vld) {
     let defaults = { autorun: 1 };
+    const { find, attr } = vld.core;
     const attachedFlag = 'ovldunobs';
+
+    function data(elm, name, val) {
+        if (val === undefined) {
+            return elm.dataset[name];
+        }
+        else if (val === null) {
+            delete elm.dataset[name];
+        }
+        else {
+            elm.dataset[name] = val;
+        }
+    }
 
     function bind({ selector, rules, related } = { selector: 'form' }) {
         let destrFuncs = [];
 
-        $(selector).each(function () {
-            const cont = $(this);
-            if (cont.data(attachedFlag)) return;
-            cont.data(attachedFlag, 1);
+        find(document, selector).forEach(function (cont) {            
+            if (data(cont, attachedFlag)) {                
+                return;
+            }
+
+            data(cont, attachedFlag, 1);
 
             const api = vld.bind({
                 subev: 'submit',
@@ -17,14 +32,18 @@
                     return mergeRules(parseRules(cont), rules);
                 },
                 msgCont: function ({ input, name }) {
-                    return $(input).closest(selector).find(`[data-valmsg-for="${name}"]`);
+                    const nodes = find(input.closest(selector), `[data-valmsg-for="${name}"]`);           
+
+                    if (!nodes.length) return;
+
+                    return nodes[0];
                 },
                 related
             });
 
             destrFuncs.push(() => {
                 api.destroy();
-                cont.data(attachedFlag, null);
+                data(cont, attachedFlag, null);
             });
         });
 
@@ -52,8 +71,6 @@
     function parseRules(form) {
         const rules = {};
 
-        form = $(form);
-
         function addRule(key, rule) {
             if (!rules[key]) rules[key] = [];
             rules[key].push(rule);
@@ -65,31 +82,30 @@
         var dmaxlenmax = dmaxlen + '-max';
         var dminlenmin = dminlen + '-min';
 
-        form.find(`[${dmaxlenmax}]`).each(function () {
-            var max = $(this).attr(dmaxlenmax);
-            addRule($(this).attr('name'), { chk: vld.rules.maxlen(max), msg: $(this).attr(dmaxlen) });
+        find(form, `[${dmaxlenmax}]`).forEach(function (inp) {
+            var max = attr(inp, dmaxlenmax);
+            addRule(attr(inp, 'name'), { chk: vld.rules.maxlen(max), msg: attr(inp, dmaxlen) });
         });
 
-        form.find(`[${dminlenmin}]`).each(function () {
-            var min = $(this).attr(dminlenmin);
-            addRule($(this).attr('name'), { chk: vld.rules.minlen(min), msg: $(this).attr(dminlen) });
+        find(form, `[${dminlenmin}]`).forEach(function (inp) {
+            var min = attr(inp, dminlenmin);
+            addRule(attr(inp, 'name'), { chk: vld.rules.minlen(min), msg: attr(inp, dminlen) });
         });
 
-        form.find(`[${dval}length]`).each(function () {
-            var inp = $(this);
-            var min = inp.attr(`${dval}length-min`);
-            var max = inp.attr(`${dval}length-max`);
+        find(form, `[${dval}length]`).forEach(function (inp) {
+            var min = attr(inp, `${dval}length-min`);
+            var max = attr(inp, `${dval}length-max`);
             addRule(
-                inp.attr('name'),
+                attr(inp, 'name'),
                 {
                     chk: vld.rules.len({ min, max }),
-                    msg: inp.attr(`${dval}length`)
+                    msg: attr(inp, `${dval}length`)
                 });
         });
 
-        form.find(`[${dval}required]`).each(function () {
-            var name = $(this).attr('name');
-            addRule(name, { chk: vld.rules.req, msg: $(this).attr(`${dval}required`) });
+        find(form, `[${dval}required]`).forEach(function (inp) {
+            var name = attr(inp, 'name');
+            addRule(name, { chk: vld.rules.req, msg: attr(inp, `${dval}required`) });
         });
 
         return rules;
@@ -104,17 +120,15 @@
     }
 
     // doc ready
-    $(function () {
+    document.addEventListener('DOMContentLoaded', function () {
         if (defaults.autorun) {
             bind();
         }
     });
 
-    const unobtrusive = {
+    vld.unobtrusive = {
         bind,
         setDefaults,
         validate
     };
-
-    vld.unobtrusive = unobtrusive;
-}(jQuery, ovld));
+}(window.ovld));

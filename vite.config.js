@@ -18,24 +18,26 @@ export default defineConfig({
                 format: 'es',
                 entryFileNames: (chunkInfo) => {
                     if (chunkInfo.name === 'ovldUnobtrusive') {
-                        return `ovld.unobtrusive-${version}.js`;
+                        return `ovld.unobtrusive.js`;
                     }
                     
-                    return `[name]-${version}.js`;
+                    return `[name].js`;
                 },
-                dir: 'dist'
+                dir: 'dist',
+                exports: 'named'
             },
             
             {
                 format: 'es',
                 entryFileNames: (chunkInfo) => {
                     if (chunkInfo.name === 'ovldUnobtrusive') {
-                        return `ovld.unobtrusive-${version}.min.js`;
+                        return `ovld.unobtrusive.min.js`;
                     }
                     
-                    return `[name]-${version}.min.js`; 
+                    return `[name].min.js`; 
                 },
                 dir: 'dist',
+                exports: 'named',
                 plugins: [
                 terser({
                     output: {
@@ -43,7 +45,7 @@ export default defineConfig({
                     }
                   })
                 ]
-            }]// end output
+            }]// end output                        
         }
     }
 });

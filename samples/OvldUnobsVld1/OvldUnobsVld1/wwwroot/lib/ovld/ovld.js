@@ -1,6 +1,6 @@
-window.ovld = /* @__PURE__ */ function($) {
-  const inputFilter = "[name]:not(:checkbox)";
-  const changeEvents = "change input";
+(function(global) {
+  const inputFilter = '[name]:not([type="checkbox"])';
+  const changeEventsArr = ["change", "input"];
   const rules = {
     req: function({ v }) {
       return !v || !v.trim();
@@ -21,10 +21,31 @@ window.ovld = /* @__PURE__ */ function($) {
       };
     }
   };
+  const core = { find, attr, val, addClass, remClass, append, empty };
+  function find(cont, filter) {
+    return cont.querySelectorAll(filter);
+  }
+  function attr(elm, name) {
+    return elm.getAttribute(name);
+  }
+  function val(elm) {
+    return elm.value;
+  }
+  function addClass(elm, name) {
+    elm.classList.add(name);
+  }
+  function remClass(elm, name) {
+    elm.classList.remove(name);
+  }
+  function append(elm, html) {
+    elm.insertAdjacentHtml(html);
+  }
+  function empty(elm) {
+    elm && (elm.innerHTML = "");
+  }
   function validateCont({ opt, cont, event }) {
     let result = {};
-    $(cont).find(inputFilter).each(function() {
-      const input = $(this);
+    find(cont, inputFilter).forEach(function(input) {
       const checkRes = chkInp(opt, input, event);
       if (checkRes && Object.keys(checkRes).length > 0) {
         result = { ...result, ...checkRes };
@@ -34,7 +55,7 @@ window.ovld = /* @__PURE__ */ function($) {
   }
   function chkInp(opt, input, event) {
     if (opt.ignore && opt.ignore(input) || ovld.ignore(input)) return;
-    const name = input.attr("name");
+    const name = attr(input, "name");
     if (!name) return;
     const res = {};
     if (opt.tched) {
@@ -42,8 +63,8 @@ window.ovld = /* @__PURE__ */ function($) {
     }
     res[name] = { input, rules: chkRulesFor({ opt, name, event, input }) };
     const related = opt.related;
-    if (opt.tched && related) {
-      $.each(related[name], function(_, rname) {
+    if (opt.tched && related && related[name]) {
+      related[name].forEach(function(rname) {
         const relInput = opt.tched[rname];
         if (relInput) {
           res[rname] = { input: relInput, rules: chkRulesFor({ opt, name: rname, event, input: relInput }) };
@@ -57,8 +78,8 @@ window.ovld = /* @__PURE__ */ function($) {
     let rls = (opt.getRules ? opt.getRules() : opt.rules)[name];
     if (!rls) return invRules;
     if (!Array.isArray(rls)) rls = [rls];
-    $.each(rls, function(_, rule) {
-      var checkRes = rule.chk({ v: input.val(), event, input, name });
+    rls.forEach(function(rule) {
+      var checkRes = rule.chk({ v: val(input), event, input, name });
       if (checkRes) {
         invRules.push(checkRes.msg ? checkRes : rule);
         return false;
@@ -69,20 +90,51 @@ window.ovld = /* @__PURE__ */ function($) {
   function applyToDoc({ opt, res }) {
     Object.entries(res).forEach(([name, { input, rules: rules2 }]) => {
       const msgc = opt.msgCont({ input, name });
-      msgc.empty();
+      empty(msgc);
       if (!rules2 || !rules2.length) ;
-      else if (msgc.is("[data-valmsg-replace]")) {
-        msgc.addClass("field-validation-error").removeClass("field-validation-valid");
-        msgc.html(rules2[0].msg);
+      else if (msgc.matches("[data-valmsg-replace]")) {
+        addClass(msgc, "field-validation-error");
+        remClass(msgc, "field-validation-valid");
+        msgc.innerHTML = rules2[0].msg;
       } else {
-        msgc.append('<div class="field-validation-error">' + rules2[0].msg + "</div>");
+        append(msgc, '<div class="field-validation-error">' + rules2[0].msg + "</div>");
       }
     });
   }
   function isResValid(res) {
     return !Object.values(res).some(({ rules: rules2 }) => rules2.length);
   }
-  return {
+  function bind(nodes, events, handler, flt) {
+    const $ = window.jQuery;
+    if ($) {
+      const ename = events.join(" ");
+      $(nodes).on(ename, flt, handler);
+      return [() => $(nodes).off(ename, flt, handler)];
+    }
+    let unbinds = [];
+    let fhandler = handler;
+    if (flt) {
+      fhandler = function(event) {
+        if (event.target.matches(flt)) {
+          handler.call(this, event);
+        }
+      };
+    }
+    if (nodes instanceof NodeList) {
+      nodes = [...nodes];
+    } else {
+      nodes = [nodes];
+    }
+    nodes.forEach(function(node) {
+      events.forEach(function(ev) {
+        node.addEventListener(ev, fhandler);
+        unbinds.push(() => node.removeEventListener(ev, fhandler));
+      });
+    });
+    return unbinds;
+  }
+  const ovld = {
+    core,
     ignore: function(inp) {
     },
     rules,
@@ -97,14 +149,15 @@ window.ovld = /* @__PURE__ */ function($) {
      */
     bind: function(opt) {
       opt.tched = {};
-      const conts = opt.cont || $(opt.selector);
-      conts.on(changeEvents, inputFilter, onInput);
+      const conts = opt.cont || find(document, opt.selector);
+      let unbinds = [];
+      unbinds.push(...bind(conts, changeEventsArr, onInput, inputFilter));
       if (opt.subev) {
-        conts.on(opt.subev, onSubmit);
+        unbinds.push(...bind(conts, [opt.subev], onSubmit));
       }
       function onInput(e) {
-        const input = $(this);
-        const type = input.attr("type");
+        const input = e.target;
+        const type = attr(input, "type");
         if (type == "checkbox" || type == "radio") {
           return;
         }
@@ -126,10 +179,10 @@ window.ovld = /* @__PURE__ */ function($) {
       }
       return {
         destroy: function() {
-          conts.off(changeEvents, onInput);
-          conts.off(opt.subev, onSubmit);
+          unbinds.forEach((f) => f());
         }
       };
     }
   };
-}(jQuery);
+  global.ovld = ovld;
+})(window);
