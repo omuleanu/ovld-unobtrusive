@@ -12,6 +12,10 @@
   "author": "Valentin Plamadeala",
   "type": "module",
   "main": "ovld.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "vite build",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -38,6 +38,7 @@ export default defineConfig({
                 },
                 dir: 'dist',
                 exports: 'named',
+                sourcemap: true,
                 plugins: [
                 terser({
                     output: {
