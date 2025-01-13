@@ -38,7 +38,7 @@
     elm.classList.remove(name);
   }
   function append(elm, html) {
-    elm.insertAdjacentHtml(html);
+    elm.insertAdjacentHTML("beforeend", html);
   }
   function empty(elm) {
     elm && (elm.innerHTML = "");
@@ -168,7 +168,12 @@
       }
       function onSubmit(ev, evData) {
         const res = validateCont({ opt, cont: ev.target, event: ev });
-        applyToDoc({ opt, res });
+        try {
+          applyToDoc({ opt, res });
+        } catch (ex) {
+          ev.preventDefault();
+          throw ex;
+        }
         if (!isResValid(res)) {
           ev.preventDefault();
           if (evData) {

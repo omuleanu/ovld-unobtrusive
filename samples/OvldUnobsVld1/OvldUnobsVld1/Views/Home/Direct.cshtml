@@ -1,0 +1,56 @@
+﻿@model SampleInput
+@{
+    ViewData["Title"] = "Ovld validation";
+}
+
+<div class="text-center">
+    <h1 class="display-4">using ovld directly</h1>
+</div>
+
+<div id="f1">
+    @using (Html.BeginForm())
+    {
+        <div class="efield">
+            @Html.TextBox("Name")
+            <span class="vld-msg">@Html.ValidationMessage("Name")</span>
+        </div>
+        <div class="efield">
+            @Html.TextBox("Number")
+            <span class="vld-msg">@Html.ValidationMessage("Number")</span>
+        </div>
+        <div class="efield">
+            @Html.TextArea("Text")
+            <span class="vld-msg">@Html.ValidationMessage("Text")</span>
+        </div>
+
+        <div class="esubmit">
+            <input type="submit" value="submit" />
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        ovld.unobtrusive.setDefaults({ autorun: false });
+        ovld.bind({
+          subev: 'submit', // submit event, a custom event can be used
+          selector: '#f1',
+          rules:{
+            'Name': [
+                      { chk:ovld.rules.req, msg:'The Name field is required.' },
+                      { chk: ovld.rules.len({ max: 50, min: 3 }), msg: 'Length must be between 3 and 50' }
+                   ],
+            'Number': [{ chk: ovld.rules.req, msg: 'The Number field is required.' }, ],
+          },
+
+          // container relative to the input where to put or clear the validation message
+          msgCont: function({input}) {
+            const field = input.closest('.efield');
+            
+            if (!field) return;
+            
+            return field.querySelector('.vld-msg');
+          }
+        });
+    </script>
+}

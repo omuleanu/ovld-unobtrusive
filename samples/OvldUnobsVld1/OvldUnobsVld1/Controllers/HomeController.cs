@@ -49,6 +49,24 @@ namespace OvldUnobtrusiveValidationSample.Controllers
             return RedirectToAction("CustomRules");
         }
 
+        public IActionResult Direct()
+        {
+            return View(new SampleInput());
+        }
+
+        [HttpPost]
+        public IActionResult Direct(SampleInput input)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(input);
+            }
+
+            TempData["success"] = true;
+
+            return RedirectToAction("Direct");
+        }
+
         public IActionResult Privacy()
         {
             return View();

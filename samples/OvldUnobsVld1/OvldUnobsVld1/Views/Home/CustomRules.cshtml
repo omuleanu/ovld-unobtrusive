@@ -103,11 +103,13 @@
             return v.indexOf('asdf') !== -1;
         }
 
+        // value must equal the editor with name=Name
         function sameAsName({v, input }) {
             let nameVal = find(input.closest('form'), '[name=Name]')[0].value;
             return v != nameVal;
         }
-        
+
+        // value must be equal to editor with name=NumA + name=NumB
         function sumOfNumbers({v, input}){
             const form = input.closest('form');
             const numA = parseInt(find(form, '[name=NumA]')[0].value, 10);

@@ -46,7 +46,7 @@
     }
 
     function append(elm, html) {
-        elm.insertAdjacentHtml(html);
+        elm.insertAdjacentHTML('beforeend', html);
     }
 
     function empty(elm) {
@@ -129,7 +129,7 @@
         Object.entries(res)
             .forEach(([name, { input, rules }]) => {
                 const msgc = opt.msgCont({ input, name });
-
+                
                 empty(msgc);
                 if (!rules || !rules.length) {
                 }
@@ -178,7 +178,7 @@
         }
 
         nodes.forEach(function (node) {
-            events.forEach(function (ev) {
+            events.forEach(function (ev) {                
                 node.addEventListener(ev, fhandler);
                 unbinds.push(() => node.removeEventListener(ev, fhandler));
             });
@@ -227,12 +227,16 @@
                 }
             }
 
-            function onSubmit(ev, evData) {
-
+            function onSubmit(ev, evData) {                
                 const res = validateCont({ opt, cont: ev.target, event: ev });
-
-                applyToDoc({ opt, res });
-
+                try {
+                    applyToDoc({ opt, res });
+                }
+                catch (ex) {
+                    ev.preventDefault();
+                    throw ex;                    
+                }
+                
                 if (!isResValid(res)) {
                     ev.preventDefault();
                     if (evData) {
