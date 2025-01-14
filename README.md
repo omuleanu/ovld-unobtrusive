@@ -1,4 +1,7 @@
 # ovld unobtrusive validation
+[![npm version](https://img.shields.io/npm/v/ovld.svg?style=flat)](https://www.npmjs.com/package/ovld)
+
+
 Unobtrusive client validation for asp.net core mvc
 (can be used instead of jquery.validate + jquery.validate.unobtrusive)
 
