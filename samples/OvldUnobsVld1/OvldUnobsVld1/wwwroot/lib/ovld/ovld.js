@@ -21,7 +21,6 @@
       };
     }
   };
-  const core = { find, attr, val, addClass, remClass, append, empty };
   function find(cont, filter) {
     return cont.querySelectorAll(filter);
   }
@@ -43,6 +42,7 @@
   function empty(elm) {
     elm && (elm.innerHTML = "");
   }
+  const core = { find, attr, val, addClass, remClass, append, empty };
   function validateCont({ opt, cont, event }) {
     let result = {};
     find(cont, inputFilter).forEach(function(input) {
@@ -91,8 +91,12 @@
     Object.entries(res).forEach(([name, { input, rules: rules2 }]) => {
       const msgc = opt.msgCont({ input, name });
       empty(msgc);
-      if (!rules2 || !rules2.length) ;
-      else if (msgc.matches("[data-valmsg-replace]")) {
+      if (!rules2 || !rules2.length) {
+        if (msgc) {
+          remClass(msgc, "field-validation-error");
+          addClass(msgc, "field-validation-valid");
+        }
+      } else if (msgc.matches("[data-valmsg-replace]")) {
         addClass(msgc, "field-validation-error");
         remClass(msgc, "field-validation-valid");
         msgc.innerHTML = rules2[0].msg;

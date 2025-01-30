@@ -23,8 +23,6 @@
         }
     };
 
-    const core = { find, attr, val, addClass, remClass, append, empty };
-
     function find(cont, filter) {
         return cont.querySelectorAll(filter);
     }
@@ -52,6 +50,8 @@
     function empty(elm) {
         elm && (elm.innerHTML = '');
     }
+    
+    const core = { find, attr, val, addClass, remClass, append, empty };
 
     /**
      * @returns {Object<string, Array<InvRes>>} object with input name and invalid rules
@@ -132,6 +132,10 @@
                 
                 empty(msgc);
                 if (!rules || !rules.length) {
+                    if (msgc) {
+                        remClass(msgc, 'field-validation-error');
+                        addClass(msgc, 'field-validation-valid');
+                    }                    
                 }
                 else if (msgc.matches('[data-valmsg-replace]')) {
                     addClass(msgc, 'field-validation-error');

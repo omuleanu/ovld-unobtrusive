@@ -1,11 +1,11 @@
 {
   "name": "ovld",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "ovld unobtrusive client validation for asp.net core mvc",
   "keywords": [
     "validation",
     "unobtrusive",
-    "client",    
+    "client",
     "asp.net"
   ],
   "license": "MIT",
@@ -18,9 +18,14 @@
   ],
   "scripts": {
     "build": "vite build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "rollup-plugin-terser": "^7.0.2",
     "vite": "^6.0.7"
   }
