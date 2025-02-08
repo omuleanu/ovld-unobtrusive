@@ -247,6 +247,9 @@
                         evData.cancel = 1;
                         evData.target = this; // set invalid cont (row)
                     }
+
+                    ev.stopImmediatePropagation();
+                    return false;
                 }
             }
 
