@@ -184,6 +184,8 @@
             evData.cancel = 1;
             evData.target = this;
           }
+          ev.stopImmediatePropagation();
+          return false;
         }
       }
       return {
