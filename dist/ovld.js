@@ -185,6 +185,7 @@
             evData.target = this;
           }
           ev.stopImmediatePropagation();
+          ev.target.dispatchEvent(new Event("ovldinvalidate", { cancelable: true, bubbles: true, isTrusted: true }));
           return false;
         }
       }

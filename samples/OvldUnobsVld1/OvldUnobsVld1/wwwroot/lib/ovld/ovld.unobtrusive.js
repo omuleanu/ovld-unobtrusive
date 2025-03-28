@@ -2,6 +2,7 @@
   let defaults = { autorun: 1 };
   const { find, attr } = vld.core;
   const attachedFlag = "ovldunobs";
+  init();
   function data(elm, name, val) {
     if (val === void 0) {
       return elm.dataset[name];
@@ -96,11 +97,19 @@
   function setDefaults(opt) {
     defaults = Object.assign({}, defaults, opt);
   }
-  document.addEventListener("DOMContentLoaded", function() {
-    if (defaults.autorun) {
-      bind();
+  function init() {
+    document.addEventListener("DOMContentLoaded", function() {
+      if (defaults.autorun) {
+        bind();
+      }
+    });
+    const $ = window.jQuery;
+    if ($) {
+      $(document).on("ovldCallBind", () => bind());
+    } else {
+      document.addEventListener("ovldCallBind", () => bind());
     }
-  });
+  }
   vld.unobtrusive = {
     bind,
     setDefaults,

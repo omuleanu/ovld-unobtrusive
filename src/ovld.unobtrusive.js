@@ -3,6 +3,8 @@
     const { find, attr } = vld.core;
     const attachedFlag = 'ovldunobs';
 
+    init();
+
     function data(elm, name, val) {
         if (val === undefined) {
             return elm.dataset[name];
@@ -119,12 +121,22 @@
         defaults = Object.assign({}, defaults, opt);
     }
 
-    // doc ready
-    document.addEventListener('DOMContentLoaded', function () {
-        if (defaults.autorun) {
-            bind();
+    function init() {
+        // doc ready
+        document.addEventListener('DOMContentLoaded', function () {
+            if (defaults.autorun) {
+                bind();
+            }
+        });
+        
+        const $ = window.jQuery;
+        if ($) {
+            $(document).on('ovldCallBind', () => bind());
         }
-    });
+        else {
+            document.addEventListener('ovldCallBind', () => bind());
+        }    
+    }    
 
     vld.unobtrusive = {
         bind,

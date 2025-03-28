@@ -1,6 +1,6 @@
 {
   "name": "ovld",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "ovld unobtrusive client validation for asp.net core mvc",
   "keywords": [
     "validation",
