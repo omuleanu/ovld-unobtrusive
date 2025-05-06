@@ -12,24 +12,25 @@
       elm.dataset[name] = val;
     }
   }
-  function bind({ selector, rules, related } = { selector: "form" }) {
+  function bind({ selector, rules, related, elements, subev, msgCont } = { selector: "form", subev: "submit" }) {
     let destrFuncs = [];
-    find(document, selector).forEach(function(cont) {
+    msgCont = msgCont || function({ input, name }) {
+      const nodes = find(input.closest(selector), `[data-valmsg-for="${name}"]`);
+      if (!nodes.length) return;
+      return nodes[0];
+    };
+    (elements || find(document, selector)).forEach(function(cont) {
       if (data(cont, attachedFlag)) {
         return;
       }
       data(cont, attachedFlag, 1);
       const api = vld.bind({
-        subev: "submit",
+        subev,
         cont,
         getRules: () => {
           return mergeRules(parseRules(cont), rules);
         },
-        msgCont: function({ input, name }) {
-          const nodes = find(input.closest(selector), `[data-valmsg-for="${name}"]`);
-          if (!nodes.length) return;
-          return nodes[0];
-        },
+        msgCont,
         related
       });
       destrFuncs.push(() => {
@@ -105,10 +106,11 @@
     });
     const $ = window.jQuery;
     if ($) {
-      $(document).on("ovldCallBind", () => bind());
+      $(document).on("ovlduCallBind", () => bind());
     } else {
-      document.addEventListener("ovldCallBind", () => bind());
+      document.addEventListener("ovlduCallBind", () => bind());
     }
+    document.dispatchEvent(new CustomEvent("ovlduInit", { cancelable: true, bubbles: true, isTrusted: true }));
   }
   vld.unobtrusive = {
     bind,

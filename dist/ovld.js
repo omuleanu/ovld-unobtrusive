@@ -90,7 +90,14 @@
   function applyToDoc({ opt, res }) {
     Object.entries(res).forEach(([name, { input, rules: rules2 }]) => {
       const msgc = opt.msgCont({ input, name });
+      if (!msgc) {
+        if (rules2.length) {
+          console.warn(`no message container for ${name}`);
+        }
+        return;
+      }
       empty(msgc);
+      remClass(msgc, "field-validation-valid");
       if (!rules2 || !rules2.length) {
         if (msgc) {
           remClass(msgc, "field-validation-error");
@@ -98,7 +105,6 @@
         }
       } else if (msgc.matches("[data-valmsg-replace]")) {
         addClass(msgc, "field-validation-error");
-        remClass(msgc, "field-validation-valid");
         msgc.innerHTML = rules2[0].msg;
       } else {
         append(msgc, '<div class="field-validation-error">' + rules2[0].msg + "</div>");
@@ -146,9 +152,10 @@
       return validateCont({ opt, cont: opt.cont });
     },
     /**
-     *  Performs an example operation. 
+     *  
      * @param {Object} opt - options 
-     * @param {string} options.selector - container selector 
+     * @param {Object} options.cont - container
+     * @param {string} options.selector - selector 
      * @param {string} options.subev - submit event, check on event         
      */
     bind: function(opt) {
