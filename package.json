@@ -1,6 +1,6 @@
 {
   "name": "ovld",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "ovld unobtrusive client validation for asp.net core mvc",
   "keywords": [
     "validation",
@@ -9,9 +9,8 @@
     "asp.net"
   ],
   "license": "MIT",
-  "author": "Valentin Plamadeala",
-  "type": "module",
-  "main": "ovld.js",
+  "author": "Valentin Plamadeala",  
+  "main": "dist/ovld.min.js",
   "files": [
     "dist",
     "README.md"
